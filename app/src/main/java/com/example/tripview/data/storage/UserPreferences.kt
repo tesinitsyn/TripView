@@ -1,7 +1,7 @@
 package com.example.tripview.data.storage
 
 import android.content.Context
-import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -14,6 +14,7 @@ class UserPreferences(private val context: Context) {
 
     companion object {
         private val TOKEN_KEY = stringPreferencesKey("auth_token")
+        private val IS_DARK_THEME_KEY = booleanPreferencesKey("is_dark_theme") // Ключ для темы
     }
 
     // Сохранение токена
@@ -33,4 +34,15 @@ class UserPreferences(private val context: Context) {
             preferences.remove(TOKEN_KEY)
         }
     }
+
+    // Сохранение темы (true - тёмная, false - светлая)
+    suspend fun saveTheme(isDark: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[IS_DARK_THEME_KEY] = isDark
+        }
+    }
+
+    // Получение текущей темы
+    val isDarkTheme: Flow<Boolean> = context.dataStore.data
+        .map { preferences -> preferences[IS_DARK_THEME_KEY] ?: false }
 }

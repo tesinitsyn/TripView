@@ -15,6 +15,6 @@ class UserRepository {
     }
 
     suspend fun getUserInfo(token: String): User {
-        return api.getUserInfo(("Bearer $token"))
+        return api.getUserInfo("Bearer $token")
     }
 }

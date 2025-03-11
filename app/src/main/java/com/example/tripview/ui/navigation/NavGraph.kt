@@ -18,6 +18,7 @@ import com.example.tripview.ui.screens.MainScreen
 import com.example.tripview.ui.screens.PlaceDetailScreen
 import com.example.tripview.ui.screens.ProfileScreen
 import com.example.tripview.ui.screens.SearchScreen
+import com.example.tripview.ui.screens.SettingsScreen
 
 sealed class Screen(val route: String) {
     object Login : Screen("login")
@@ -74,6 +75,10 @@ fun AppNavGraph(startDestination: String = Screen.Login.route) {
         composable("search") {
             SearchScreen(navController)
         }
+        composable("settings") {
+            SettingsScreen(navController)
+        }
+
     }
 }
 

@@ -49,6 +49,7 @@ class ProfileViewModel(
         }
     }
 
+
     fun fetchFavoritePlaces() {
         viewModelScope.launch {
             val token = userPreferences.authToken.first() ?: return@launch
