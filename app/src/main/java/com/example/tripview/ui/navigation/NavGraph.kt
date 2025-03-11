@@ -11,14 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.tripview.data.storage.UserPreferences
-import com.example.tripview.ui.screens.AddPlaceScreen
-import com.example.tripview.ui.screens.LoginScreen
-import com.example.tripview.ui.screens.RegisterScreen
-import com.example.tripview.ui.screens.MainScreen
-import com.example.tripview.ui.screens.PlaceDetailScreen
-import com.example.tripview.ui.screens.ProfileScreen
-import com.example.tripview.ui.screens.SearchScreen
-import com.example.tripview.ui.screens.SettingsScreen
+import com.example.tripview.ui.screens.*
 
 sealed class Screen(val route: String) {
     object Login : Screen("login")
@@ -27,7 +20,7 @@ sealed class Screen(val route: String) {
 }
 
 @Composable
-fun AppNavGraph(startDestination: String = Screen.Login.route) {
+fun AppNavGraph(startDestination: String = Screen.Login.route, onThemeChanged: () -> Unit) {
     val navController = rememberNavController()
     val context = LocalContext.current
     val userPreferences = remember { UserPreferences(context) }
@@ -56,7 +49,7 @@ fun AppNavGraph(startDestination: String = Screen.Login.route) {
         }
         composable(Screen.Main.route) {
             MainScreen(
-                navController = navController,  // Передаём navController
+                navController = navController,
                 onPlaceClick = { placeId -> navController.navigate("place_detail/$placeId") }
             )
         }
@@ -76,11 +69,7 @@ fun AppNavGraph(startDestination: String = Screen.Login.route) {
             SearchScreen(navController)
         }
         composable("settings") {
-            SettingsScreen(navController)
+            SettingsScreen(navController, onThemeChanged) // Передаем смену темы
         }
-
     }
 }
-
-
-

@@ -1,13 +1,10 @@
 package com.example.tripview.ui.screens
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.ExitToApp
-import androidx.compose.material.icons.filled.NightsStay
-import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -18,15 +15,19 @@ import androidx.navigation.NavController
 import com.example.tripview.data.storage.UserPreferences
 import com.example.tripview.viewmodel.SettingsViewModel
 import com.example.tripview.viewmodel.SettingsViewModelFactory
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(navController: NavController) {
+fun SettingsScreen(navController: NavController, onThemeChanged: () -> Unit) {
     val context = LocalContext.current
     val userPreferences = remember { UserPreferences(context) }
-    val viewModel: SettingsViewModel = viewModel(factory = SettingsViewModelFactory(userPreferences))
+    val viewModel: SettingsViewModel = viewModel(
+        factory = SettingsViewModelFactory(userPreferences)
+    )
 
     val isDarkTheme by viewModel.isDarkTheme.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
@@ -46,7 +47,7 @@ fun SettingsScreen(navController: NavController) {
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            Text(text = "Настройки", style = MaterialTheme.typography.headlineMedium)
+            Text("Настройки", style = MaterialTheme.typography.headlineMedium)
             Spacer(modifier = Modifier.height(16.dp))
 
             // Переключение темы
@@ -54,28 +55,36 @@ fun SettingsScreen(navController: NavController) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = "Тёмная тема", style = MaterialTheme.typography.bodyLarge)
-                IconButton(onClick = { viewModel.toggleTheme() }) {
-                    Icon(
-                        imageVector = if (isDarkTheme) Icons.Default.NightsStay else Icons.Default.WbSunny,
-                        contentDescription = "Смена темы"
-                    )
-                }
+                Text("Темная тема")
+                Switch(
+                    checked = isDarkTheme,
+                    onCheckedChange = {
+                        viewModel.toggleTheme()
+                        onThemeChanged() // Переключаем тему в `MainActivity`
+                    }
+                )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-            // Кнопка выхода
+            // Кнопка выхода из аккаунта
             Button(
                 onClick = {
-                    viewModel.logout()
-                    Toast.makeText(context, "Вы вышли из аккаунта", Toast.LENGTH_SHORT).show()
-                    navController.navigate("login") {
-                        popUpTo("main") { inclusive = true }
+                    coroutineScope.launch {
+                        viewModel.logout()
+                        navController.navigate("login") {
+                            popUpTo("main") { inclusive = true }
+                        }
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
             ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                    contentDescription = "Выйти",
+                    modifier = Modifier.padding(end = 8.dp)
+                )
                 Text("Выйти из аккаунта")
             }
         }
