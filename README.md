@@ -1,7 +1,3 @@
-Based on the information provided, here is a draft of your `README.md` file for the TripView repository:
-
----
-
 # TripView
 
 TripView is a university project developed to work with Kotlin and help users share their experiences in traveling.
