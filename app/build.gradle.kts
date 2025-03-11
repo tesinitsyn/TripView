@@ -56,6 +56,9 @@ dependencies {
     implementation(libs.datastore.preferences)
     implementation(libs.coil.compose) // ✅ Теперь Coil подключен
 
+    implementation(libs.androidx.material.icons.extended)
+
+
 
     //Gson
     implementation(libs.gson)

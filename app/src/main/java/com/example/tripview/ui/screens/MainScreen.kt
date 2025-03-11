@@ -7,6 +7,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -36,6 +38,16 @@ fun MainScreen(
             TopAppBar(
                 title = { Text("Trip View") },
                 actions = {
+                    // Кнопка "Поиск"
+                    IconButton(onClick = { navController.navigate("search") }) {
+                        Icon(Icons.Default.Search, contentDescription = "Поиск")
+                    }
+
+                    // Кнопка "Профиль"
+                    IconButton(onClick = { navController.navigate("profile") }) {
+                        Icon(Icons.Default.Person, contentDescription = "Профиль")
+                    }
+                    // Кнопка "Добавить место"
                     IconButton(onClick = { navController.navigate("add_place") }) {
                         Icon(Icons.Default.Add, contentDescription = "Добавить место")
                     }

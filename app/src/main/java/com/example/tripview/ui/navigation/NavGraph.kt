@@ -16,6 +16,8 @@ import com.example.tripview.ui.screens.LoginScreen
 import com.example.tripview.ui.screens.RegisterScreen
 import com.example.tripview.ui.screens.MainScreen
 import com.example.tripview.ui.screens.PlaceDetailScreen
+import com.example.tripview.ui.screens.ProfileScreen
+import com.example.tripview.ui.screens.SearchScreen
 
 sealed class Screen(val route: String) {
     object Login : Screen("login")
@@ -57,7 +59,6 @@ fun AppNavGraph(startDestination: String = Screen.Login.route) {
                 onPlaceClick = { placeId -> navController.navigate("place_detail/$placeId") }
             )
         }
-
         composable("place_detail/{placeId}") { backStackEntry ->
             val placeId = backStackEntry.arguments?.getString("placeId")?.toIntOrNull()
             if (placeId != null) {
@@ -66,6 +67,12 @@ fun AppNavGraph(startDestination: String = Screen.Login.route) {
         }
         composable("add_place") {
             AddPlaceScreen(navController)
+        }
+        composable("profile") {
+            ProfileScreen(navController)
+        }
+        composable("search") {
+            SearchScreen(navController)
         }
     }
 }
