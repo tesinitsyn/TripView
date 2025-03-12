@@ -1,11 +1,7 @@
 package com.example.tripview.ui.navigation
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -24,9 +20,12 @@ fun AppNavGraph(startDestination: String = Screen.Login.route, onThemeChanged: (
     val navController = rememberNavController()
     val context = LocalContext.current
     val userPreferences = remember { UserPreferences(context) }
-    var startDestinationState by remember { mutableStateOf(startDestination) }
 
-    LaunchedEffect(Unit) {
+    // Запоминаем стартовый экран и поисковый запрос
+    var startDestinationState by rememberSaveable { mutableStateOf(startDestination) }
+    var searchQuery by rememberSaveable { mutableStateOf("") }
+
+    LaunchedEffect(navController) {
         userPreferences.authToken.collect { token ->
             if (!token.isNullOrEmpty()) {
                 startDestinationState = Screen.Main.route
@@ -66,10 +65,10 @@ fun AppNavGraph(startDestination: String = Screen.Login.route, onThemeChanged: (
             ProfileScreen(navController)
         }
         composable("search") {
-            SearchScreen(navController)
+            SearchScreen(navController, searchQuery, onQueryChange = { searchQuery = it })
         }
         composable("settings") {
-            SettingsScreen(navController, onThemeChanged) // Передаем смену темы
+            SettingsScreen(navController, onThemeChanged)
         }
     }
 }

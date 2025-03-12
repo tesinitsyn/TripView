@@ -5,7 +5,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -16,9 +15,19 @@ import com.example.tripview.viewmodel.SearchViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchScreen(navController: NavController, searchViewModel: SearchViewModel = viewModel()) {
-    var query by remember { mutableStateOf("") }
+fun SearchScreen(
+    navController: NavController,
+    query: String,
+    onQueryChange: (String) -> Unit,
+    searchViewModel: SearchViewModel = viewModel()
+) {
     val searchResults by searchViewModel.searchResults.collectAsState()
+
+    LaunchedEffect(query) {
+        if (query.isNotEmpty()) {
+            searchViewModel.searchPlaces(query)
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -40,10 +49,7 @@ fun SearchScreen(navController: NavController, searchViewModel: SearchViewModel 
         ) {
             OutlinedTextField(
                 value = query,
-                onValueChange = {
-                    query = it
-                    searchViewModel.searchPlaces(it)  // Запуск поиска
-                },
+                onValueChange = onQueryChange,
                 label = { Text("Введите запрос") },
                 modifier = Modifier.fillMaxWidth()
             )
